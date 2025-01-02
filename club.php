@@ -70,6 +70,15 @@
 		
 		break;
 		
+		case 'leave':
+		
+			if(isValidInputData('userId', $data) || isValidInputData('clubId', $data))
+				printError('invalid params');
+			
+			
+		
+		break;
+		
 		default:
 			printError('invalid action');
 		break;

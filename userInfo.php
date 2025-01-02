@@ -2,7 +2,7 @@
 
 	include_once('config.php');
 	
-	$data = $_POST;
+	$data = $_GET;
 	
 	if(!isset($data['action']) || empty($data['action']) || !isset($data['userId']) || empty($data['userId']))
 		printError('incorect data');
@@ -10,6 +10,9 @@
 	switch($data['action'])
 	{	
 		case 'getBasic':
+		
+			if(!isValidInputData($data['userId'], $data))
+				printError('invalid user id');
 		
 			$sql = "
 			
@@ -35,6 +38,11 @@
 		
 		case 'getStat':
 		
+				//print_r($data); die();
+		
+			if(!isValidInputData('userId', $data))
+				printError('invalid user id');
+		
 			$sql = "
 			
 				SELECT users.id AS uid, CONCAT ( users.fname, ' ', users.lname) AS uname,
@@ -57,7 +65,7 @@
 			if(!$response)
 				printError('user not found');
 			else
-				printResponse('success', $response);
+				printResponse($response);
 		
 		break;
 		
@@ -84,6 +92,10 @@
 			else
 				generateResponse('success', $result);*/
 		
+		break;
+		
+		default:
+			printError('invalid action');
 		break;
 	}
 

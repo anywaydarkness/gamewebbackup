@@ -60,11 +60,10 @@
 		
 			if( !isset($data['userId']) || empty($data['userId']) ||
 				!isset($data['clubId']) || empty($data['clubId']) ||
-				!isset($data['rankId']) || empty($data['rankId']))
 					printError('invalid params');
 		
-			$sql = 'INSERT INTO club_users ( user_id, club_id, rank_id ) VALUES ( :userId, :clubId, :rankId )';
-			$db->query($sql, array( 'userId' => $data['userId'], 'clubId' => $data['clubId'], 'rankId' => $data['rankId'] ));
+			$sql = 'INSERT INTO club_users ( user_id, club_id ) VALUES ( :userId, :clubId )';
+			$db->query($sql, array( 'userId' => $data['userId'], 'clubId' => $data['clubId'] ));
 			
 			printResponse(array());
 		

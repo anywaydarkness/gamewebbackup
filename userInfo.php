@@ -2,7 +2,7 @@
 
 	include_once('config.php');
 	
-	$data = $_GET;
+	$data = $_POST;
 	
 	if(!isset($data['action']) || empty($data['action']) || !isset($data['userId']) || empty($data['userId']))
 		printError('incorect data');
@@ -11,7 +11,7 @@
 	{	
 		case 'getBasic':
 		
-			if(!isValidInputData($data['userId'], $data))
+			if(!isValidInputData('userId', $data))
 				printError('invalid user id');
 		
 			$sql = "
@@ -38,8 +38,6 @@
 		
 		case 'getStat':
 		
-				//print_r($data); die();
-		
 			if(!isValidInputData('userId', $data))
 				printError('invalid user id');
 		
@@ -47,8 +45,8 @@
 			
 				SELECT users.id AS uid, CONCAT ( users.fname, ' ', users.lname) AS uname,
 				donate.amount as donate, user_addinfo.sex, user_addinfo.health, user_addinfo.armour,
-				user_addinfo.level_point, user_addinfo.moneys, deposits.amount AS deposit,
-				fractions.title, ranks_frcs.title as rank_title
+				user_addinfo.uLevel AS uLevel, user_addinfo.level_point as uLevelPoints, user_addinfo.moneys AS money, deposits.amount AS deposit,
+				fractions.title AS fracTitle, ranks_frcs.title AS fracRank
 				FROM users 
 				INNER JOIN donate ON users.id = donate.user_id
 				INNER JOIN user_addinfo ON users.id = user_addinfo.user_id

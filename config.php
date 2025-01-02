@@ -56,5 +56,10 @@
 	{
 		printResponse(array('message' => $errorMessage), 'error');
 	}
+	
+	function isValidInputData($input, $storage)
+	{
+		return isset($storage[$input]) && !empty($storage[$input]);
+	}
 
 ?>

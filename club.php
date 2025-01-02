@@ -59,7 +59,7 @@
 		case 'join':
 		
 			if( !isset($data['userId']) || empty($data['userId']) ||
-				!isset($data['clubId']) || empty($data['clubId']) ||
+				!isset($data['clubId']) || empty($data['clubId']))
 					printError('invalid params');
 		
 			$sql = 'INSERT INTO club_users ( user_id, club_id ) VALUES ( :userId, :clubId )';
@@ -71,10 +71,12 @@
 		
 		case 'leave':
 		
-			if(isValidInputData('userId', $data) || isValidInputData('clubId', $data))
+			if(!isValidInputData('userId', $data) || !isValidInputData('clubId', $data))
 				printError('invalid params');
 			
+			$db->query('DELETE FROM club_users WHERE user_id = :userId', array('userId' => $data['userId']));
 			
+			printResponse(array());
 		
 		break;
 		

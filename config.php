@@ -1,7 +1,5 @@
 <?php
 
-	error_reporting(E_ALL);
-
 	include_once('db.class.php');
 	include_once('security.php');
 	
@@ -9,23 +7,6 @@
 	$db = new Db($connInfo);
 	
 	function printResponse($data, $status = 'success')
-	{
-		$xml = new DOMDocument();
-		
-		$root = $xml->appendChild($xml->createElement('root'));
-		$root->appendChild($xml->createElement('status', $status));
-		
-		$response = $root->appendChild($xml->createElement('response'));
-		
-		arrayToXml($xml, $response, $data);
-		
-		header("Content-Type: text/plain");
-		$xml->formatOutput = true;
-		
-		die($xml->saveXml());
-	}
-	
-	function test($data, $status = 'success')
 	{
 		$xml = new DOMDocument();
 		

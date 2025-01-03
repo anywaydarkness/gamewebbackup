@@ -1,6 +1,6 @@
 <?php
 
-	$data = $_POST;
+	$data = $_GET;
 	
 	include_once('config.php');
 	
@@ -19,12 +19,16 @@
 				$famId = $db->lastInsId();
 				
 				for($i = 1; $i < 9; $i++)
-					$db->query('INSERT INTO club_ranks (rank_id, club_id) VALUES ( :rank_id, :club_id )', array( $i, $famId ));
+					$db->query('INSERT INTO club_ranks (rank_id, club_id) 
+					VALUES ( :rank_id, :club_id )', array( $i, $famId ));
 				
-				$db->query('INSERT INTO club_ranks (rank_id, club_id, title) VALUES ( :rank_id, :club_id, :title )', array( 9, $famId, 'Deputy'));
-				$db->query('INSERT INTO club_ranks (rank_id, club_id, title) VALUES ( :rank_id, :club_id, :title )', array( 10, $famId, 'Head'));
+				$db->query('INSERT INTO club_ranks (rank_id, club_id, title) VALUES 
+							( :rank_id, :club_id, :title )', array( 9, $famId, 'Deputy'));
+				$db->query('INSERT INTO club_ranks (rank_id, club_id, title) 
+							VALUES ( :rank_id, :club_id, :title )', array( 10, $famId, 'Head'));
 				
-				$db->query('INSERT INTO club_users (user_id, club_id, rank_id) VALUES ( :user_id, :club_id, :rank_id)', array( $data['userId'], $famId, 10));
+				$db->query('INSERT INTO club_users (user_id, club_id, rank_id) 
+					VALUES ( :user_id, :club_id, :rank_id)', array( $data['userId'], $famId, 10));
 				
 				printResponse(array());
 			}
@@ -39,12 +43,14 @@
 		
 		case 'findUserClub':
 		
-			if(!isset($data['userId']) || empty($data['userId']))
+			if(!isValidInputData('userId', $data))
 				printError('invalid user id');
 			
-			$sql = 'SELECT club_users.club_id, club_users.rank_id,	clubs.title, clubs.color, club_ranks.title AS rank_title
+			$sql = 'SELECT club_users.club_id, club_users.rank_id,	
+					clubs.title, clubs.color, club_ranks.title AS rank_title
 					FROM club_users JOIN clubs ON club_users.club_id = clubs.id
-					JOIN club_ranks ON club_ranks.rank_id = club_users.rank_id AND club_ranks.club_id = club_users.club_id
+					JOIN club_ranks ON club_ranks.rank_id = club_users.rank_id 
+					AND club_ranks.club_id = club_users.club_id
 					WHERE club_users.user_id = :userId';
 					
 			$response = $db->query($sql, array('userId' => $data['userId']));
@@ -53,6 +59,47 @@
 				printError('The user has not joined any club.');
 			else
 				printResponse($response);
+		
+		break;
+		
+		case 'allInfo':
+		
+			if(!isValidInputData('userId', $data))
+				printError('invalid user id');
+			
+			
+			$sql = 'SELECT club_users.club_id, club_users.rank_id, clubs.title, clubs.color, club_ranks.title AS rank_title
+					FROM club_users 
+					JOIN clubs ON club_users.club_id = clubs.id
+					JOIN club_ranks ON club_ranks.rank_id = club_users.rank_id  AND club_ranks.club_id = club_users.club_id
+					WHERE club_users.user_id = :userId';
+					
+			$response = $db->query($sql, array('userId' => $data['userId']));
+			
+			if(!$response)
+				printError('The user has not joined any club.');
+			
+			$sql = "SELECT club_users.rank_id, club_ranks.title, CONCAT (users.fname, ' ', users.lname) AS uname, entry_dt
+					FROM club_users 
+					JOIN users ON users.id = club_users.user_id 
+					JOIN club_ranks ON club_ranks.rank_id = club_users.rank_id
+					WHERE club_users.club_id = :clubId";
+			
+			//$response['users'] = $db->query($sql, array('clubId' => $response['club_id']));
+			
+			$users = $db->query($sql, array('clubId' => $response['club_id']));
+			
+			for($i = 0; $i < count($users); $i++)
+				$response['users']['user'.$i] = $users[$i];
+			
+			$rows = $db->query('SELECT * FROM users WHERE id = 1', array());
+			
+			//echo '<pre>'; print_r($rows); die();
+			
+			//for($i = 0; $i < count($rows); $i++)
+			//	$r2['user'.$i] = $rows[$i];
+			
+			printResponse($rows);
 		
 		break;
 		

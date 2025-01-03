@@ -1,5 +1,7 @@
 <?php
 
+	error_reporting(E_ALL);
+
 	include_once('db.class.php');
 	include_once('security.php');
 	
@@ -8,22 +10,47 @@
 	
 	function printResponse($data, $status = 'success')
 	{
-		$xmlDoc = new DOMDocument();
-		$xmlDoc->encoding = 'UTF-8';
+		$xml = new DOMDocument();
 		
-		$root = $xmlDoc->appendChild($xmlDoc->createElement('root'));
+		$root = $xml->appendChild($xml->createElement('root'));
+		$root->appendChild($xml->createElement('status', $status));
 		
-		$root->appendChild($xmlDoc->createElement('status', $status));
+		$response = $root->appendChild($xml->createElement('response'));
 		
-		$infoBl = $root->appendChild($xmlDoc->createElement('response'));
-
-		foreach($data as $key => $val)
-			$infoBl->appendChild($xmlDoc->createElement($key, $val));
+		arrayToXml($xml, $response, $data);
 		
 		header("Content-Type: text/plain");
-		$xmlDoc->formatOutput = true;
+		$xml->formatOutput = true;
 		
-		die($xmlDoc->saveXml());
+		die($xml->saveXml());
+	}
+	
+	function test($data, $status = 'success')
+	{
+		$xml = new DOMDocument();
+		
+		$root = $xml->appendChild($xml->createElement('root'));
+		$root->appendChild($xml->createElement('status', $status));
+		
+		$response = $root->appendChild($xml->createElement('response'));
+		
+		arrayToXml($xml, $response, $data);
+		
+		header("Content-Type: text/plain");
+		$xml->formatOutput = true;
+		
+		die($xml->saveXml());
+	}
+	
+	function arrayToXml($xml, $root, $data)
+	{
+		foreach($data as $key => $item)
+		{
+			if(is_array($item))
+				arrayToXml($xml, $root->appendChild($xml->createElement($key)), $item);
+			else
+				$root->appendChild($xml->createElement($key, $item));
+		}
 	}
 	
 	function printListResponse($data, $itemTitle, $status = 'success')

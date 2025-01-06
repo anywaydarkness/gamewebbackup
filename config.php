@@ -30,7 +30,10 @@
 			if(is_array($item))
 				arrayToXml($xml, $root->appendChild($xml->createElement($key)), $item);
 			else
-				$root->appendChild($xml->createElement($key, $item));
+				if(!empty($item))
+					$root->appendChild($xml->createElement($key, $item));
+				else
+					$root->appendChild($xml->createElement($key));
 		}
 	}
 	

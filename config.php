@@ -3,7 +3,6 @@
 	include_once('db.class.php');
 	include_once('security.php');
 	
-	
 	$db = new Db($connInfo);
 	
 	function printResponse($data, $status = 'success')
@@ -28,12 +27,19 @@
 		foreach($data as $key => $item)
 		{
 			if(is_array($item))
-				arrayToXml($xml, $root->appendChild($xml->createElement($key)), $item);
+			{
+				if(is_numeric($key))
+					$key = 'item';
+				
+				arrayToXml($xml, $root->appendChild($xml->createElement(strval($key))), $item);
+			}
 			else
+			{
 				if(!empty($item))
 					$root->appendChild($xml->createElement($key, $item));
 				else
 					$root->appendChild($xml->createElement($key));
+			}
 		}
 	}
 	

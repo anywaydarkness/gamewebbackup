@@ -23,25 +23,20 @@
 			
 			do
 			{
-				$resp = $smt->fetchAll();
+				$data = $smt->fetchAll();
 				
-				if(!empty($resp))
-				{
-					if(count($resp) == 1)
-						$data[] = $resp[0];
-					else
-						$data[] = $resp;
-				}
+				if(!empty($data))
+					$response = $data;
 			}
 			while($smt->nextRowset());
 			
-			if(empty($data))
+			if(empty($response))
 				return false;
 			
 			if($isFullResponse)
-				return $data;
+				return $response;
 			
-			return count($data) == 1 ? $data[0] : $data;
+			return count($response) == 1 ? $response[0] : $response;
 		}
 		
 		public function lastInsId()

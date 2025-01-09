@@ -21,18 +21,11 @@
 		break;
 		
 		case 'getAllHouse':
-		case 'houseInfo':
-
-			//if(!isValidInputData('houseId', $data))
-			//	printError('invalid house id');
-
-			$sql = "SELECT house.id, owner_id, lock_door, CONCAT(users.fname, ' ', users.lname) AS uname
-					FROM house LEFT JOIN  users ON users.id = house.owner_id";
+		
+			$sql = "SELECT house.title,	 house.id, owner_id, is_open, house_improv.workshop, house_improv.parking, CONCAT(users.fname, ' ', users.lname) AS uname
+					FROM house LEFT JOIN  users ON users.id = house.owner_id LEFT JOIN house_improv ON house_improv.house_id = house.id";
 					
-			if($data['action'] == 'houseInfo')
-				$sql += "WHERE house.id = :houseId";
-					
-			$response = $db->query($sql, array());
+			$response = $db->query($sql, array(), true);
 			
 			if(!$response)
 				printError('no find house');
@@ -43,7 +36,7 @@
 		
 		case 'getMarkers':
 			
-			$response = $db->query('SELECT * FROM house_marker', array());
+			$response = $db->query('SELECT * FROM house_marker', array(), true);
 			
 			if(!$response)
 				printError('No find markers');
@@ -60,8 +53,9 @@
 			$sql = "START TRANSACTION;
 					INSERT INTO house_marker(cord) VALUES (:houseCord);
 					INSERT INTO house () VALUES ();
-					SELECT LAST_INSERT_ID() AS house_id;
 					INSERT INTO house_improv (house_id) VALUES (LAST_INSERT_ID());
+					SELECT house.title, house.id, owner_id, is_open, house_improv.workshop, house_improv.parking, CONCAT(users.fname, ' ', users.lname) AS uname
+					FROM house LEFT JOIN  users ON users.id = house.owner_id LEFT JOIN house_improv ON house_improv.house_id = house.id WHERE house.id = LAST_INSERT_ID();
 					COMMIT;";
 			
 			$response = $db->query($sql, array('houseCord' => $data['houseCord']));

@@ -4,15 +4,14 @@
 	
 	$data = $_POST;
 	
-	if(!isset($data['action']) || empty($data['action']))
+	if(!isValidInputData('action', $data))
 		printError('invalid data');
 	
 	switch($data['action'])
 	{
 		case 'login':
 		
-			if(!isset($data['cardNumb']) || empty($data['cardNumb']) || 
-				!isset($data['cardPass']) || empty($data['cardPass']))
+			if(!isValidInputData('cardNumb', $data) || !isValidInputData('cardPass', $data))
 					printError('invalid params');
 					
 			$sql = 'SELECT id FROM user_cards WHERE card_numb = :cardNumb AND pass = :cardPass';
@@ -27,9 +26,9 @@
 		
 		case 'list':
 		
-			if(!isset($data['userId']) || empty($data['userId']))
+			if(!isValidInputData('userId', $data))
 				printError('no player id specified');
-
+			
 			$sql = "SELECT user_cards.id, cards.title, cards.icon_id, user_cards.amount, 
 					CONCAT(users.fname,' ',users.lname) AS uname, user_cards.card_numb
 					from user_cards join cards on cards.id = user_cards.card_id join users on user_cards.user_id = users.id 

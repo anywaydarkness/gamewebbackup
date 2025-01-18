@@ -22,8 +22,8 @@
 			
 			if(!$response)
 				printError('empty');
-			
-			echo '<pre>'; print_r($response); die();
+			else
+				printResponse($response);
 		
 		break;
 		
@@ -50,7 +50,7 @@
 									'count' => isset($data['count']) ? $data['count'] : 1, 
 									'cx' => $cords['x'], 'cy' => $cords['y'] ));
 			
-			echo '<pre>'; print_r($response); die();
+			printResponse($response);
 			
 		break;
 	}

@@ -2,7 +2,7 @@
 
 	include_once('config.php');
 	
-	$data = $_GET;
+	$data = $_POST;
 	
 	if(!isValidInputData('action', $data))
 		printError('invalid action');
@@ -16,7 +16,10 @@
 			if(!isValidInputData('userId', $data))
 				printError('invalid user id');
 		
-			$sql = 'SELECT * FROM items_user WHERE id_user = :userId';
+			$sql = "SELECT items_user.id, items.title, items.icon_id AS icon, items.weight, count, cx, cy 
+					FROM items_user 
+					JOIN items ON items.id = items_user.id_item
+					WHERE id_user = :userId";
 			
 			$response = $db->query($sql, array('userId' => $data['userId']), true);
 			
@@ -24,6 +27,13 @@
 				printError('empty');
 			else
 				printResponse($response);
+		
+		break;
+		
+		case 'getSize':
+		
+			echo($gridSize); 
+			die();
 		
 		break;
 		

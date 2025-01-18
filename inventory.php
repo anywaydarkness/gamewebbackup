@@ -16,7 +16,7 @@
 			if(!isValidInputData('userId', $data))
 				printError('invalid user id');
 		
-			$sql = "SELECT items_user.id, items.title, items.icon_id AS icon, items.weight, count, cx, cy 
+			$sql = "SELECT items_user.id, items.title, items.icon, items.weight, count, cx, cy 
 					FROM items_user 
 					JOIN items ON items.id = items_user.id_item
 					WHERE id_user = :userId";

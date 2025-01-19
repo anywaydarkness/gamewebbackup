@@ -7,7 +7,7 @@
 	if(!isValidInputData('action', $data))
 		printError('invalid action');
 
-	$gridSize = 13;
+	$gridSize = 11;
 
 	switch($data['action'])
 	{
@@ -16,7 +16,7 @@
 			if(!isValidInputData('userId', $data))
 				printError('invalid user id');
 		
-			$sql = "SELECT items_user.id, items.title, items.icon, items.weight, count, cx, cy 
+			$sql = "SELECT items_user.id, items_user.id_item AS itemId, items.title, items.info, items.icon, items.weight, count, cx, cy 
 					FROM items_user 
 					JOIN items ON items.id = items_user.id_item
 					WHERE id_user = :userId";
@@ -62,6 +62,20 @@
 			
 			printResponse($response);
 			
+		break;
+		
+		case 'updateCord':
+		
+			if(!isValidInputData('items', $data))
+				printError('invalid items');
+			
+			$items = explode('*', $data['items']);
+			
+			$sql = 'UPDATE items_user SET cx = :cx, cy = :cy WHERE id = :id';
+			
+			foreach($items as $item)
+				$db->query($sql, json_decode($item, true));
+		
 		break;
 	}
 	

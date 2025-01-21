@@ -18,8 +18,15 @@
 		
 		public function query($sql, $options, $isFullResponse = false)
 		{
-			$smt = $this->pdo->prepare($sql);
+			try
+			{
+				$smt = $this->pdo->prepare($sql);
 				$smt->execute($options);
+			}
+			catch(Exception $ex)
+			{
+				return array('error' => $ex->getMessage());
+			}
 			
 			do
 			{

@@ -77,6 +77,14 @@
 				$db->query($sql, json_decode($item, true));
 		
 		break;
+		
+		case 'decItem':
+			$db->query('UPDATE items_user SET count = count -1 WHERE id = :id', array('id' => $data['id']));
+		break;
+		
+		case 'delete':
+			$db->query('DELETE FROM items_user WHERE id = :id', array('id' => $data['id']));
+		break;
 	}
 	
 	function createGrid($size)
